@@ -36,3 +36,7 @@
 .bar.sorted {
   background: #5cb85c;
 }
+.info {
+  margin-bottom: 12px;
+  color: #555;
+}

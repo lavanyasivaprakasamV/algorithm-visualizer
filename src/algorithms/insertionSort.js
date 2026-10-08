@@ -1,33 +1,33 @@
 import { range } from "./helpers";
 
-export function* bubbleSort(input) {
+export function* insertionSort(input) {
   const a = [...input];
   const n = a.length;
 
-  for (let i = 0; i < n - 1; i++) {
-    let swapped = false;
-    const sorted = range(n - i, n);
-    for (let j = 0; j < n - 1 - i; j++) {
+  for (let i = 1; i < n; i++) {
+    let j = i;
+    while (j > 0) {
       yield {
         type: "compare",
         array: [...a],
-        comparing: [j, j + 1],
+        comparing: [j - 1, j],
         swapping: [],
-        sorted,
+        sorted: [],
       };
-      if (a[j] > a[j + 1]) {
-        [a[j], a[j + 1]] = [a[j + 1], a[j]];
-        swapped = true;
+      if (a[j - 1] > a[j]) {
+        [a[j - 1], a[j]] = [a[j], a[j - 1]];
         yield {
           type: "swap",
           array: [...a],
           comparing: [],
-          swapping: [j, j + 1],
-          sorted,
+          swapping: [j - 1, j],
+          sorted: [],
         };
+        j--;
+      } else {
+        break;
       }
     }
-    if (!swapped) break;
   }
   yield {
     type: "done",
