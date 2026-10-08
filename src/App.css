@@ -117,3 +117,63 @@ button:disabled {
     height: 240px;
   }
 }
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+}
+.tab {
+  border: none;
+  background: none;
+  padding: 8px 16px;
+  border-bottom: 3px solid transparent;
+  font-size: 16px;
+}
+.tab.active {
+  border-bottom-color: #6c8ebf;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  gap: 1px;
+  background: #ddd;
+  border: 1px solid #ddd;
+  user-select: none;
+}
+.cell {
+  aspect-ratio: 1;
+  background: #fff;
+}
+.cell.wall {
+  background: #2c3e50;
+}
+.cell.visited {
+  background: #a9cce3;
+}
+.cell.path {
+  background: #f4d03f;
+}
+.cell.start {
+  background: #27ae60;
+}
+.cell.end {
+  background: #c0392b;
+}
+
+.dot.start {
+  background: #27ae60;
+}
+.dot.end {
+  background: #c0392b;
+}
+.dot.wall {
+  background: #2c3e50;
+}
+.dot.visited {
+  background: #a9cce3;
+}
+.dot.path {
+  background: #f4d03f;
+}

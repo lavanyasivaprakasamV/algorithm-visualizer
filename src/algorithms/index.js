@@ -4,6 +4,7 @@ import { insertionSort } from "./insertionSort";
 import { mergeSort } from "./mergeSort";
 import { quickSort } from "./quickSort";
 import { heapSort } from "./heapSort";
+
 export const ALGORITHMS = {
   bubble: {
     name: "Bubble Sort",
