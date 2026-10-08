@@ -1,0 +1,38 @@
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: system-ui, sans-serif;
+}
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.stats {
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 320px;
+  border-bottom: 2px solid #ccc;
+}
+.bar {
+  flex: 1;
+  background: #6c8ebf;
+  transition: height 0.05s;
+}
+.bar.comparing {
+  background: #f0ad4e;
+}
+.bar.swapping {
+  background: #d9534f;
+}
+.bar.sorted {
+  background: #5cb85c;
+}
