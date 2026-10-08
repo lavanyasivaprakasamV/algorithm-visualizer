@@ -1,9 +1,14 @@
 .app {
   max-width: 900px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 16px;
   font-family: system-ui, sans-serif;
+  color: #222;
 }
+h1 {
+  margin-top: 0;
+}
+
 .controls {
   display: flex;
   gap: 12px;
@@ -11,10 +16,44 @@
   margin-bottom: 12px;
   flex-wrap: wrap;
 }
-.stats {
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.custom {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 8px;
+}
+button,
+select {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.error {
+  color: #c0392b;
   margin-bottom: 12px;
+}
+.info {
+  margin-bottom: 8px;
+  color: #555;
+}
+.stats {
+  margin-bottom: 4px;
   font-weight: 600;
 }
+.status {
+  margin-bottom: 12px;
+  min-height: 1.4em;
+  color: #555;
+}
+
 .bars {
   display: flex;
   align-items: flex-end;
@@ -26,6 +65,15 @@
   flex: 1;
   background: #6c8ebf;
   transition: height 0.05s;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+}
+.bar span {
+  font-size: 11px;
+  color: #fff;
+  padding-top: 2px;
 }
 .bar.comparing {
   background: #f0ad4e;
@@ -36,7 +84,36 @@
 .bar.sorted {
   background: #5cb85c;
 }
-.info {
-  margin-bottom: 12px;
-  color: #555;
+
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+.dot.normal {
+  background: #6c8ebf;
+}
+.dot.comparing {
+  background: #f0ad4e;
+}
+.dot.swapping {
+  background: #d9534f;
+}
+.dot.sorted {
+  background: #5cb85c;
+}
+
+@media (max-width: 600px) {
+  .bars {
+    height: 240px;
+  }
 }
