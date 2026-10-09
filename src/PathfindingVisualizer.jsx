@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { PATH_ALGORITHMS } from "./algorithms/pathfinding/index.js";
+import { stepCost } from "./algorithms/pathfinding/helpers.js";
 
 const ROWS = 15;
 const COLS = 30;
 const START = 7 * COLS + 4;
 const END = 7 * COLS + 25;
-const HINT = "Click and drag on the grid to draw walls, then press Play.";
+const HINT = "Click and drag on the grid to draw, then press Play.";
 
 export default function PathfindingVisualizer() {
   const [algo, setAlgo] = useState("bfs");
   const [walls, setWalls] = useState(new Set());
+  const [weights, setWeights] = useState(new Set());
+  const [drawMode, setDrawMode] = useState("wall");
   const [visited, setVisited] = useState(new Set());
   const [path, setPath] = useState(new Set());
   const [status, setStatus] = useState(HINT);
@@ -26,6 +29,7 @@ export default function PathfindingVisualizer() {
         rows: ROWS,
         cols: COLS,
         walls,
+        weights,
         start: START,
         end: END,
       });
@@ -39,8 +43,13 @@ export default function PathfindingVisualizer() {
     if (value.type === "visit") {
       setVisited((prev) => new Set(prev).add(value.node));
     } else if (value.type === "path") {
+      const cost = value.path
+        .slice(1)
+        .reduce((sum, i) => sum + stepCost(i, weights), 0);
       setPath(new Set(value.path));
-      setStatus(`Path found: ${value.path.length - 1} steps`);
+      setStatus(
+        `Path found: ${value.path.length - 1} steps, total cost ${cost}`,
+      );
       setPlaying(false);
     } else if (value.type === "nopath") {
       setStatus("No path exists. The walls block every route.");
@@ -60,6 +69,7 @@ export default function PathfindingVisualizer() {
   const clearAll = () => {
     clearPath();
     setWalls(new Set());
+    setWeights(new Set());
   };
 
   const randomWalls = () => {
@@ -69,6 +79,17 @@ export default function PathfindingVisualizer() {
       if (i !== START && i !== END && Math.random() < 0.25) w.add(i);
     }
     setWalls(w);
+    setWeights(new Set());
+  };
+
+  const randomWeights = () => {
+    clearPath();
+    const w = new Set();
+    for (let i = 0; i < ROWS * COLS; i++) {
+      if (i !== START && i !== END && !walls.has(i) && Math.random() < 0.25)
+        w.add(i);
+    }
+    setWeights(w);
   };
 
   const changeAlgo = (key) => {
@@ -77,19 +98,38 @@ export default function PathfindingVisualizer() {
   };
 
   const paint = (idx) => {
-    const mode = drawing.current;
-    if (!mode || started || idx === START || idx === END) return;
-    setWalls((prev) => {
-      const next = new Set(prev);
-      if (mode === "add") next.add(idx);
-      else next.delete(idx);
-      return next;
-    });
+    const action = drawing.current;
+    if (!action || started || idx === START || idx === END) return;
+
+    if (drawMode === "wall") {
+      setWalls((prev) => {
+        const next = new Set(prev);
+        if (action === "add") next.add(idx);
+        else next.delete(idx);
+        return next;
+      });
+      if (action === "add") {
+        setWeights((prev) => {
+          const next = new Set(prev);
+          next.delete(idx);
+          return next;
+        });
+      }
+    } else {
+      if (walls.has(idx)) return;
+      setWeights((prev) => {
+        const next = new Set(prev);
+        if (action === "add") next.add(idx);
+        else next.delete(idx);
+        return next;
+      });
+    }
   };
 
   const handleDown = (idx) => {
     if (started || idx === START || idx === END) return;
-    drawing.current = walls.has(idx) ? "erase" : "add";
+    const target = drawMode === "wall" ? walls : weights;
+    drawing.current = target.has(idx) ? "erase" : "add";
     paint(idx);
   };
 
@@ -126,8 +166,6 @@ export default function PathfindingVisualizer() {
           Step
         </button>
         <button onClick={clearPath}>Clear path</button>
-        <button onClick={randomWalls}>Random walls</button>
-        <button onClick={clearAll}>Clear all</button>
         <label>
           Speed
           <input
@@ -140,8 +178,24 @@ export default function PathfindingVisualizer() {
         </label>
       </div>
 
+      <div className="controls">
+        <label>
+          Draw
+          <select
+            value={drawMode}
+            onChange={(e) => setDrawMode(e.target.value)}
+          >
+            <option value="wall">Walls</option>
+            <option value="weight">Weights (cost 5)</option>
+          </select>
+        </label>
+        <button onClick={randomWalls}>Random walls</button>
+        <button onClick={randomWeights}>Random weights</button>
+        <button onClick={clearAll}>Clear all</button>
+      </div>
+
       <div className="info">
-        <strong>{info.name}</strong> — shortest path: {info.shortest} · time{" "}
+        <strong>{info.name}</strong> — best path: {info.shortest} · time{" "}
         {info.time} · space {info.space}
       </div>
       <div className="stats">Visited cells: {visited.size}</div>
@@ -157,8 +211,11 @@ export default function PathfindingVisualizer() {
         {Array.from({ length: ROWS * COLS }, (_, idx) => {
           let cls = "cell";
           if (walls.has(idx)) cls += " wall";
-          else if (path.has(idx)) cls += " path";
-          else if (visited.has(idx)) cls += " visited";
+          else {
+            if (path.has(idx)) cls += " path";
+            else if (visited.has(idx)) cls += " visited";
+            if (weights.has(idx)) cls += " weight";
+          }
           if (idx === START) cls += " start";
           if (idx === END) cls += " end";
           return (
@@ -182,6 +239,9 @@ export default function PathfindingVisualizer() {
         </span>
         <span>
           <i className="dot wall" /> Wall
+        </span>
+        <span>
+          <i className="dot weight" /> Weight (cost 5)
         </span>
         <span>
           <i className="dot visited" /> Visited

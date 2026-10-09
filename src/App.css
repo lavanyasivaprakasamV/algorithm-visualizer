@@ -177,3 +177,13 @@ button:disabled {
 .dot.path {
   background: #f4d03f;
 }
+.cell.weight {
+  box-shadow: inset 0 0 0 3px #b9770e;
+}
+.cell.weight:not(.visited):not(.path) {
+  background: #f5deb3;
+}
+.dot.weight {
+  background: #f5deb3;
+  box-shadow: inset 0 0 0 2px #b9770e;
+}

@@ -18,3 +18,6 @@ export function buildPath(prev, start, end) {
   }
   return path.reverse();
 }
+export const WEIGHT_COST = 5;
+
+export const stepCost = (idx, weights) => (weights.has(idx) ? WEIGHT_COST : 1);
