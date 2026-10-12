@@ -1,16 +1,49 @@
-# React + Vite
+# Algorithm Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![CI](https://github.com/lavanyasivaprakasamV/algorithm-visualizer/actions/workflows/ci.yml/badge.svg)
 
-Currently, two official plugins are available:
+An interactive visualizer for sorting and pathfinding algorithms, built with React.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+\*\*[Live demo](https://algorithm-visualizer-ecru-two.vercel.app/)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **6 sorting algorithms:** bubble, selection, insertion, merge, quick, heap
+- **4 pathfinding algorithms:** BFS, DFS, Dijkstra, A\*
+- Play, pause, step, restart and speed controls
+- Live counters for comparisons and swaps/writes, plus the complexity of each algorithm
+- Custom array input with validation, and an adjustable array size
+- A drawable grid with walls and weighted cells (cost 5)
 
-## Expanding the ESLint configuration
+## How it works
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Every algorithm is a JavaScript generator function that yields a snapshot
+at each interesting step (compare, swap, visit). The UI only plays those
+snapshots back, so it knows nothing about how any algorithm works.
+Adding a new algorithm means writing one file and adding one line to a registry.
+
+Dijkstra and A\* use a binary min-heap priority queue written from scratch
+(`src/algorithms/pathfinding/minHeap.js`).
+
+## Tech stack
+
+React, Vite, JavaScript, Vitest, ESLint, GitHub Actions, Vercel
+
+## Run locally
+
+```bash
+git clone https://github.com/lavanyasivaprakasamV/algorithm-visualizer.git
+cd algorithm-visualizer
+npm install
+npm run dev
+```
+
+## Tests
+
+```bash
+npm test
+```
+
+Unit tests cover all sorting algorithms (including empty arrays and duplicates),
+the min-heap, and pathfinding (valid paths, walls, unreachable targets, weighted routes).
+Tests run on every push through GitHub Actions.
